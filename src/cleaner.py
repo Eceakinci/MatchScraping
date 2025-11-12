@@ -2,8 +2,10 @@ import pandas as pd
 import ast
 import glob
 import re
+import os
 
-def ensure_list(x):
+
+def parse_as_list(x):
     if isinstance(x, list):
         return x
     if isinstance(x, str):
@@ -14,9 +16,9 @@ def ensure_list(x):
     return [x]
 
 
-def dynamic_explode(data):
+def expand_nested_lists(data):
 
-    data = data.applymap(ensure_list)
+    data = data.applymap(parse_as_list)
     expanded_rows = []
 
     for _, row in data.iterrows():
@@ -39,12 +41,16 @@ def dynamic_explode(data):
 
     return pd.DataFrame(expanded_rows)
 
-path = 'matches/*.csv'
-files = glob.glob(path)
-for file in files:
-    df = pd.read_csv(file)
-    df = dynamic_explode(df)
-    regex = r'[^\\\/]+(?=\_.)'
-    matchId = re.search(regex, file).group(0)
-    df["match_id"] = matchId
-    df.to_csv(file, index=False)
+
+def clean_all_csv_files(input_path, output_path):
+    files = glob.glob(input_path)
+    for file in files:
+        df = pd.read_csv(file)
+        df = expand_nested_lists(df)
+        match_id = re.search(r'[^\\\/]+(?=\_.)', file).group(0)
+        df["match_id"] = match_id
+        filename = os.path.basename(file)
+
+        output_file = f'{output_path}/{filename}'
+        df.to_csv(output_file, index=False)
+        print(f"Saved: {output_file}")

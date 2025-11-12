@@ -1,8 +1,9 @@
 import csv
 from playwright.sync_api import sync_playwright
+import os
 
 
-def scoring(match):
+def scrape_scoring_stats(page, match_id, output_dir_raw):
     scoring_data = []
     scoring_list = page.locator(".vbw-stats-scoring.vbw-set-all").all()
     for pl in scoring_list:
@@ -25,14 +26,14 @@ def scoring(match):
             "scoring_serves": serves,
             "scoring_efficiency_percentage": efficiencypercentage
         })
-    with open(f"{match}_scoring.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_scoring.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "position", "scoring_totalabs", "scoring_attacks",
                                                "scoring_blocks", "scoring_serves", "scoring_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(scoring_data)
 
 
-def attack(match):
+def scrape_attack_stats(page, match_id, output_dir_raw):
     attack_data = []
     attack_list = page.locator(".vbw-stats-attack.vbw-set-all").all()
     for pl in attack_list:
@@ -55,14 +56,14 @@ def attack(match):
             "attack_efficiency_percentage": efficiencypercentage
         })
 
-    with open(f"{match}_attack.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_attack.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "attack_point", "attack_errors", "attack_attempts",
                                                "attack_total", "attack_serves", "attack_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(attack_data)
 
 
-def block(match):
+def scrape_block_stats(page, match_id, output_dir_raw):
     block_data = []
     block_list = page.locator(".vbw-stats-block.vbw-set-all").all()
     for pl in block_list:
@@ -85,14 +86,14 @@ def block(match):
             "block_efficiency_percentage": efficiencypercentage
         })
 
-    with open(f"{match}_block.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_block.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "block_point", "block_errors", "block_touches",
                                                "block_total", "block_serves", "block_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(block_data)
 
 
-def serve(match):
+def scrape_serve_stats(page, match_id, output_dir_raw):
     serve_data = []
     serve_list = page.locator(".vbw-stats-serve.vbw-set-all").all()
     for pl in serve_list:
@@ -114,14 +115,14 @@ def serve(match):
             "serve_efficiency_percentage": efficiencypercentage
         })
 
-    with open(f"{match}_serve.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_serve.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "serve_point", "serve_errors", "serve_attempts",
                                                "serve_total", "serve_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(serve_data)
 
 
-def reception(match):
+def scrape_reception_stats(page, match_id, output_dir_raw):
     reception_data = []
     reception_list = page.locator(".vbw-stats-reception.vbw-set-all").all()
     for pl in reception_list:
@@ -143,14 +144,14 @@ def reception(match):
             "reception_efficiency_percentage": efficiencypercentage
         })
 
-    with open(f"{match}_reception.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_reception.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "reception_successful", "reception_errors", "reception_attempts",
                                                "reception_total", "reception_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(reception_data)
 
 
-def dig(match):
+def scrape_dig_stats(page, match_id, output_dir_raw):
     dig_data = []
     dig_list = page.locator(".vbw-stats-dig.vbw-set-all").all()
     for pl in dig_list:
@@ -170,26 +171,31 @@ def dig(match):
             "dig_efficiency_percentage": efficiencypercentage
         })
 
-    with open(f"{match}_dig.csv", "w", newline="", encoding="utf-8") as f:
+    with open(f"{output_dir_raw}/{match_id}_dig.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["shirt_number", "name", "digs", "dig_errors", "dig_attempts",
                                             "dig_efficiency_percentage"])
         writer.writeheader()
         writer.writerows(dig_data)
 
 
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True)  # headless=False if you want to see it
-    page = browser.new_page()
-    matches = {22403, 22419, 22431, 22442, 22448, 22451, 22454}
+def scrape_match_data(page, match_id, output_dir_raw):
+    scrape_scoring_stats(page, match_id, output_dir_raw)
+    scrape_attack_stats(page, match_id, output_dir_raw)
+    scrape_block_stats(page, match_id, output_dir_raw)
+    scrape_serve_stats(page, match_id, output_dir_raw)
+    scrape_reception_stats(page, match_id, output_dir_raw)
+    scrape_dig_stats(page, match_id, output_dir_raw)
 
-    # Wait until the players section is rendered
-    for match in matches:
-        page.goto(f"https://en.volleyballworld.com/volleyball/competitions/women-world-championship/schedule/{match}/#boxscore")
-        page.wait_for_selector(".vbw-mu__player")
-        scoring(match)
-        attack(match)
-        block(match)
-        serve(match)
-        reception(match)
-        dig(match)
-    browser.close()
+
+def scrape_all_matches(match_ids, base_url, output_dir_raw):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        os.makedirs(output_dir_raw, exist_ok=True)
+        print(match_ids)
+        for match_id in match_ids:
+            url = f"{base_url}/{match_id}/#boxscore"
+            page.goto(url)
+            page.wait_for_selector(".vbw-mu__player")
+            scrape_match_data(page, match_id, output_dir_raw)
+        browser.close()
