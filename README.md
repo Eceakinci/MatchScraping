@@ -76,6 +76,7 @@ playwright install
 Once you have completed the setup, you can run the entire pipeline with a single command:
 
 ```bash
+cd src
 python main.py
 ```
 

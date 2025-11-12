@@ -18,7 +18,7 @@ def parse_as_list(x):
 
 def expand_nested_lists(data):
 
-    data = data.applymap(parse_as_list)
+    data = data.map(parse_as_list)
     expanded_rows = []
 
     for _, row in data.iterrows():

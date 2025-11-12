@@ -192,7 +192,7 @@ def scrape_all_matches(match_ids, base_url, output_dir_raw):
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         os.makedirs(output_dir_raw, exist_ok=True)
-        print(match_ids)
+        print(f"Match ID's: {match_ids}")
         for match_id in match_ids:
             url = f"{base_url}/{match_id}/#boxscore"
             page.goto(url)
