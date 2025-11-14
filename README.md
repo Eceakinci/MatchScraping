@@ -35,8 +35,8 @@ Follow these steps to get the project running on your local machine.
 ### 1\. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd <your-repo-name>
+git clone https://github.com/Eceakinci/MatchScraping
+cd MatchScraping
 ```
 
 ### 2\. Create a Virtual Environment
