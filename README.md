@@ -71,7 +71,7 @@ playwright install
 
 -----
 
-## ▶ How to Run
+## How to Run
 
 Once you have completed the setup, you can run the entire pipeline with a single command:
 
