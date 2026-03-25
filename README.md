@@ -6,7 +6,7 @@ The primary goal is to demonstrate a simple, maintainable, and extensible data p
 
 -----
 
-## 🚀 Key Features
+## Key Features
 
 * **Targeted Scraping**: Extracts 6 key player-stat categories: Scoring, Attack, Block, Serve, Reception, and Dig.
 * **Data Cleaning**: Processes raw, nested data into a clean, flat, tabular format (one row per player per stat).
@@ -19,7 +19,7 @@ The primary goal is to demonstrate a simple, maintainable, and extensible data p
 
 -----
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Python**: The core programming language.
 * **Playwright**: For web scraping and browser automation.
@@ -28,7 +28,7 @@ The primary goal is to demonstrate a simple, maintainable, and extensible data p
 
 -----
 
-## 📋 Setup and Installation
+## Setup and Installation
 
 Follow these steps to get the project running on your local machine.
 
@@ -89,7 +89,7 @@ python main.py
 
 -----
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 
@@ -108,7 +108,7 @@ python main.py
 
 -----
 
-## 🔄 How It Works: Data Flow
+## How It Works: Data Flow
 
 This project follows a simple **Extract, Load, Transform (ELT)** pattern.
 
