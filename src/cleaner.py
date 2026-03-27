@@ -47,8 +47,12 @@ def clean_all_csv_files(input_path, output_path):
     for file in files:
         df = pd.read_csv(file)
         df = expand_nested_lists(df)
-        match_id = re.search(r'[^\\\/]+(?=\_.)', file).group(0)
-        df["match_id"] = match_id
+        match = re.search(r'[^\\\/]+(?=\_.)', file)
+
+        if match:
+            match_id = match.group(0)
+            df["match_id"] = match_id
+
         filename = os.path.basename(file)
 
         output_file = f'{output_path}/{filename}'
